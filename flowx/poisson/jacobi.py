@@ -32,25 +32,19 @@ def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
         default: False.
 
     """
-    phi = grid.get_values(ivar)
-    b = grid.get_values(rvar)
+    phi = grid.get_values( ivar )
+    b = grid.get_values( rvar )
     dx, dy = grid.dx, grid.dy
 
     ites = 0
     residual = tol + 1.0
     while ites < maxiter and residual > tol:
         phi_old = numpy.copy(phi)  # previous solution
-        phi[1:-1, 1:-1] = (((phi_old[1:-1, :-2] +
-                             phi_old[1:-1, 2:]) * dy**2 +
-                            (phi_old[:-2, 1:-1] +
-                             phi_old[2:, 1:-1]) * dx**2 -
-                            b[1:-1, 1:-1] * dx**2 * dy**2) /
-                           (2 * (dx**2 + dy**2)))
+        phi[1:-1, 1:-1] = (((phi_old[1:-1, :-2] + phi_old[1:-1, 2:]) * dy**2 + (phi_old[:-2, 1:-1] + phi_old[2:, 1:-1]) * dx**2 - b[1:-1, 1:-1] * dx**2 * dy**2) / (2 * (dx**2 + dy**2)))
 
         grid.fill_guard_cells(ivar)
 
-        residual = (numpy.sqrt(numpy.sum((phi - phi_old)**2) /
-                    ((grid.nx + 2) * (grid.ny + 2))))
+        residual = (numpy.sqrt(numpy.sum((phi - phi_old)**2) / ((grid.nx + 2) * (grid.ny + 2))))
         ites += 1
 
     if verbose:

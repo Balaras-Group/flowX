@@ -2,7 +2,6 @@
 
 import numpy
 
-
 def solve_gsor(grid, ivar, rvar, omega, maxiter=3000, tol=1e-9, verbose=False):
     """Solve the Poisson system using a Jacobi method.
 
@@ -52,9 +51,9 @@ def solve_gsor(grid, ivar, rvar, omega, maxiter=3000, tol=1e-9, verbose=False):
     
     if verbose:
         print( 'SOR method:' )
-            if ites == maxiter:
-                print( 'Warning: maximum number of iterations reached!' )
-            print( '- Number of iterations: {}'.format( ites ) )
-            print( '- Final residual: {}'.format( residual ) )
+        if ites == maxiter:
+            print( 'Warning: maximum number of iterations reached!' )
+        print( '- Number of iterations: {}'.format( ites ) )
+        print( '- Final residual: {}'.format( residual ) )
     
     return ites, residual
