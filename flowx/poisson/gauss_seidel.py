@@ -40,9 +40,9 @@ def solve_gauss_seidel( grid, ivar, rvar, maxiter = 3000, tol = 1e-9, verbose = 
     residual = tol + 1.0
     while ites < maxiter and residual > tol:
         phi_old = numpy.copy( phi )
-        for j in range( 1, ny - 1 ):
-            for i in range( 1, nx - 1 ):
-                phi[ j, i ] =  ( ( phi[ j, i - 1 ] + phi[ j, i + 1 ] ) * dy**2 + ( phi[ j - 1, i ] + phi[ j + 1, i ] ) * dx**2 - b[ j, i ] * dx**2 * dy**2 ) / ( 2 * ( dx**2 + dy**2 ) )
+        for j in range( 1, ny + 1 ):
+            for i in range( 1, nx + 1 ):
+                phi[ j, i ] =  ( ( phi[ j, i - 1 ] + phi_old[ j, i + 1 ] ) * dy**2 + ( phi[ j - 1, i ] + phi_old[ j + 1, i ] ) * dx**2 - b[ j, i ] * dx**2 * dy**2 ) / ( 2 * ( dx**2 + dy**2 ) )
 
         grid.fill_guard_cells( ivar )
         residual = numpy.sqrt( numpy.sum( ( phi - phi_old )**2 ) / ( ( grid.nx + 2 ) * ( grid.ny + 2 ) ) ) 
