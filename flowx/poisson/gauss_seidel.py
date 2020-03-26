@@ -1,9 +1,7 @@
-"""Routine to solve the Poisson system with Gauss-Seidel."""
-
 import numpy
 
 def solve_gauss_seidel( grid, ivar, rvar, maxiter = 3000, tol = 1e-9, verbose = False ):
-    """Solve the Poisson system using a Jacobi method.
+    """Solve the Poisson system using a Gauss-Seidel method.
 
     Arguments
     ---------
