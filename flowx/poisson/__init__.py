@@ -1,3 +1,4 @@
 from .jacobi import solve_jacobi
-from .gauss_seidel import solve_gauss_seidel
+from .gauss  import solve_gauss
 from .gsor import solve_gsor
+from .scipy_conjugate_gradient import solve_CG

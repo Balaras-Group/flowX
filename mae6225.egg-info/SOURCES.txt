@@ -1,0 +1,8 @@
+README.md
+setup.py
+mae6225/__init__.py
+mae6225/version.py
+mae6225.egg-info/PKG-INFO
+mae6225.egg-info/SOURCES.txt
+mae6225.egg-info/dependency_links.txt
+mae6225.egg-info/top_level.txt

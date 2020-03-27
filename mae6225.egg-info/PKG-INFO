@@ -1,0 +1,33 @@
+Metadata-Version: 1.2
+Name: mae6225
+Version: 0.1.dev0
+Summary: mae6225: incompressible Navier-Stokes solver
+Home-page: https://github.com/Balaras-Group/MAE-6225
+Author: 
+Author-email: 
+Maintainer: 
+Maintainer-email: 
+License: BSD 3-Clause
+Description: 
+        mae6225
+        =====
+        mae6225 is a library that contains building blocks to solve the
+        two-dimensional incompressible Navier-Stokes equations using a fractional-step
+        method.
+        
+        License
+        =======
+        ``mae6225`` is licensed under the terms of the BSD 3-Clause license. See the
+        file "LICENSE" for information on the history of this software,
+        terms & conditions for usage, and a DISCLAIMER OF ALL WARRANTIES.
+        All trademarks referenced herein are property of their respective holders.
+        Copyright (c) 2019, Students of MAE-6225 (Spring 2019).
+        
+Platform: Unix
+Classifier: Development Status :: 1 - Alpha
+Classifier: Environment :: Console
+Classifier: License :: OSI Approved :: BSD 3-Clause License
+Classifier: Operating System :: Unix
+Classifier: Programming Language :: Python
+Requires: numpy
+Requires: matplotlib
