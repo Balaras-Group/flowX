@@ -36,7 +36,7 @@ def solve_gsor(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=True):
     b = grid.get_values(rvar)
     dx, dy = grid.dx, grid.dy
     nx, ny = grid.nx, grid.ny
-    w=1.5
+    w=1.2
 
     ites = 0
     residual = tol + 1.0
