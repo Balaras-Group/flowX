@@ -1,7 +1,7 @@
 """Routine to solve the Poisson system with Jacobi."""
 
 import numpy
-
+import time
 
 def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
     """Solve the Poisson system using a Jacobi method.
@@ -25,39 +25,42 @@ def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
     -------
     ites: integer
         Number of iterations computed.
-    residual: float
-        Final residual.
+    difference: float
+        Final difference.
     verbose : bool, optional
         Set True to display convergence information;
         default: False.
 
     """
-    phi = grid.get_values(ivar)
+
+    start = time.time()
+    u = grid.get_values(ivar)
     b = grid.get_values(rvar)
     dx, dy = grid.dx, grid.dy
 
     ites = 0
-    residual = tol + 1.0
-    while ites < maxiter and residual > tol:
-        phi_old = numpy.copy(phi)  # previous solution
-        phi[1:-1, 1:-1] = (((phi_old[1:-1, :-2] +
-                             phi_old[1:-1, 2:]) * dy**2 +
-                            (phi_old[:-2, 1:-1] +
-                             phi_old[2:, 1:-1]) * dx**2 -
+    difference = tol + 1.0
+    while ites < maxiter and difference > tol:
+        u_old = numpy.copy(u)  # previous solution
+        u[1:-1, 1:-1] = (((u_old[1:-1, :-2] +
+                             u_old[1:-1, 2:]) * dy**2 +
+                            (u_old[:-2, 1:-1] +
+                             u_old[2:, 1:-1]) * dx**2 -
                             b[1:-1, 1:-1] * dx**2 * dy**2) /
                            (2 * (dx**2 + dy**2)))
 
         grid.fill_guard_cells(ivar)
 
-        residual = (numpy.sqrt(numpy.sum((phi - phi_old)**2) /
+        difference  = (numpy.sqrt(numpy.sum((u - u_old)**2) /
                     ((grid.nx + 2) * (grid.ny + 2))))
         ites += 1
 
+    end=time.time()
     if verbose:
         print('Jacobi method:')
         if ites == maxiter:
             print('Warning: maximum number of iterations reached!')
         print('- Number of iterations: {}'.format(ites))
-        print('- Final residual: {}'.format(residual))
-
-    return ites, residual
+        print('- Final difference: {}'.format(difference))
+        print('- Execution time: {}'.format(end - start))
+    return ites, difference
