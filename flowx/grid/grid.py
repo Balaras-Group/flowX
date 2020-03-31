@@ -9,7 +9,7 @@ class GridBase(object):
     type_ = 'base'
 
     def __init__(self, var_names, nx, ny, xmin, xmax, ymin, ymax,
-                 user_bc_type=None, user_bc_val=None):
+                 user_num_solver=None, user_bc_type=None, user_bc_val=None):
         """Initialize the Grid object and allocate the data.
 
         Parameters
@@ -52,6 +52,11 @@ class GridBase(object):
         self.set_default_bc()
         if user_bc_type is not None and user_bc_val is not None:
             self.set_user_bc(user_bc_type, user_bc_val)
+
+        self.set_default_numsolver()
+        if user_num_solver is not None:
+            self.set_user_num_solver(user_num_solver)
+
         self.fill_guard_cells(var_names)
 
     def __repr__(self):
@@ -81,6 +86,15 @@ class GridBase(object):
         """
         raise NotImplementedError()
 
+    def set_default_numsolver(self):
+        """
+        Set default numerical solver to Gauss-Seidel
+        """
+        var_name = list(self.vars.keys())
+        num_var = var_name[1]
+        default_num_solver = 'Gauss-Seidel'
+        self.num_solver = {num_var:default_num_solver}
+
     def set_default_bc(self):
         """Set default boundary conditions (homogeneous Neumann)."""
         var_names = list(self.vars.keys())
@@ -105,6 +119,20 @@ class GridBase(object):
         self.bc_type = {**self.bc_type, **user_bc_type}
         # Overwrite default boundary values
         self.bc_val = {**self.bc_val, **user_bc_val}
+
+    def set_user_num_solver(self,user_num_solver):
+
+        """
+        Overwrite default numerical solver with user-provided solver
+
+        Parameters
+        ----------
+        user_num_solver: Dictionary of (string,string) items
+        		 User-defined numerical solvers
+        """
+        # Replace num_solver with user_num_solver
+        # ** is used to unpack and replace two dictionaries
+        self.num_solver = {**self.num_solver, **user_num_solver}
 
     def update_bc_val(self, user_bc_val):
         """Overwrite boundary condition values with user-provided ones.

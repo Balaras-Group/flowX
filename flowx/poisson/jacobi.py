@@ -1,9 +1,9 @@
 """Routine to solve the Poisson system with Jacobi."""
 
-import numpy
+import numpy as np
+import time
 
-
-def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
+def solve_jacobi(grid, ivar, rvar, maxiter=100000, tol=1e-9, verbose=False):
     """Solve the Poisson system using a Jacobi method.
 
     Arguments
@@ -32,32 +32,56 @@ def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
         default: False.
 
     """
-    phi = grid.get_values(ivar)
-    b = grid.get_values(rvar)
+    u = grid.get_values(ivar)
+    rhs = grid.get_values(rvar)
     dx, dy = grid.dx, grid.dy
+    nx,ny = grid.nx, grid.ny
+    asol = grid.get_values('asol')
 
-    ites = 0
-    residual = tol + 1.0
-    while ites < maxiter and residual > tol:
-        phi_old = numpy.copy(phi)  # previous solution
-        phi[1:-1, 1:-1] = (((phi_old[1:-1, :-2] +
-                             phi_old[1:-1, 2:]) * dy**2 +
-                            (phi_old[:-2, 1:-1] +
-                             phi_old[2:, 1:-1]) * dx**2 -
-                            b[1:-1, 1:-1] * dx**2 * dy**2) /
-                           (2 * (dx**2 + dy**2)))
+    coef1 = 1.0/((2.0/(dx*dx))+(2.0/(dy*dy)))
+    coef2 = 1.0/(dx*dx)
+    coef3 = 1.0/(dy*dy)
+
+    err = 1.0
+    it = 1
+    err_list = np.zeros((maxiter,1))
+
+    #phi[1:-1, 1:-1] = (((phi_old[1:-1, :-2] +
+    #                     phi_old[1:-1, 2:]) * dy**2 +
+    #                    (phi_old[:-2, 1:-1] +
+    #                     phi_old[2:, 1:-1]) * dx**2 -
+    #                    b[1:-1, 1:-1] * dx**2 * dy**2) /
+    #                   (2 * (dx**2 + dy**2)))
+
+    tic = time.perf_counter() 
+    while it < maxiter and err > tol:
+
+        u_old = np.copy(u)
+
+        for j in range(1,ny+1):
+            for i in range(1,nx+1):
+
+                u[i,j] =  coef1*coef2*(u_old[i+1,j]+u_old[i-1,j])+\
+                          coef1*coef3*(u_old[i,j+1]+u_old[i,j-1])-\
+                          coef1*rhs[i,j]
 
         grid.fill_guard_cells(ivar)
+        err = (np.sqrt(np.sum((u - u_old)**2) /
+              ((nx + 2) * (ny + 2))))
 
-        residual = (numpy.sqrt(numpy.sum((phi - phi_old)**2) /
-                    ((grid.nx + 2) * (grid.ny + 2))))
-        ites += 1
+        max_err = np.max(np.absolute((asol - u)))
+        
+        err_list[it-1] = max_err
+        it = it+1
+   
+    toc = time.perf_counter()
 
     if verbose:
         print('Jacobi method:')
-        if ites == maxiter:
+        if it == maxiter:
             print('Warning: maximum number of iterations reached!')
-        print('- Number of iterations: {}'.format(ites))
-        print('- Final residual: {}'.format(residual))
+        print('- Number of iterations: {}'.format(it))
+        print('- Final residual: {}'.format(err))
+        print(f'- Simulation time: {toc - tic:0.4f} seconds')
 
-    return ites, residual
+    return it,err_list
