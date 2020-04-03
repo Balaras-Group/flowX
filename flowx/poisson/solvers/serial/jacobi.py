@@ -1,9 +1,9 @@
-"""Routine to solve the Poisson system with Gauss-Seidel."""
+"""Routine to solve the Poisson system with Jacobi."""
 
 import numpy
 import time
 
-def solve_serial_gauss(grid, ivar, rvar, options):
+def solve_serial_jacobi(grid, ivar, rvar, options):
     """Solve the Poisson system using a Jacobi method.
 
     Arguments
@@ -37,15 +37,13 @@ def solve_serial_gauss(grid, ivar, rvar, options):
    
     t=time.time()
 
-    while ites < maxiter and residual > tol:    
+    while ites < maxiter and residual > tol:
         phi_old = numpy.copy(phi)  # previous solution
-        for j in range (1,grid.ny+1):
-            for i in range (1,grid.nx+1):
-                phi[i,j] = (((phi[i,j-1] +
-                             phi[i,j+1]) * dy**2 +
-                            (phi[i-1,j] +
-                             phi[i+1,j]) * dx**2 -
-                            b[i,j] * dx**2 * dy**2) /
+        phi[1:-1, 1:-1] = (((phi_old[1:-1, :-2] +
+                             phi_old[1:-1, 2:]) * dy**2 +
+                            (phi_old[:-2, 1:-1] +
+                             phi_old[2:, 1:-1]) * dx**2 -
+                            b[1:-1, 1:-1] * dx**2 * dy**2) /
                            (2 * (dx**2 + dy**2)))
 
         grid.fill_guard_cells(ivar)
@@ -57,7 +55,7 @@ def solve_serial_gauss(grid, ivar, rvar, options):
     t=time.time()-t
 
     if verbose:
-        print('Gauss  method:')
+        print('Jacobi method:')
         if ites == maxiter:
             print('Warning: maximum number of iterations reached!')
         print('- Number of iterations: {}'.format(ites))
