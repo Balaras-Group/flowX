@@ -1,6 +1,8 @@
 """Rk3 time advancement routine"""
 
-from .projection import predictor, corrector, divergence
+from .projection import predictor_step1, corrector_step1, divergence_step1
+from .projection import predictor_step2, corrector_step2, divergence_step2
+from .projection import predictor_step3, corrector_step3, divergence_step3
 from .stats import stats
 
 def advance_rk3(gridc, gridx, gridy, scalars, grid_var_list, predcorr):
@@ -40,7 +42,7 @@ def advance_rk3(gridc, gridx, gridy, scalars, grid_var_list, predcorr):
     if(predcorr == 'predictor_step1'):
         predictor_step1(gridx, gridy, velc, hvar, scalars.variable['Re'],scalars.variable['dt'])
     if(predcorr == 'divergence_step1'):
-        divergence_step1(gridc, gridx, gridy, velc, divv, ifac = scalars.variable['dt']/3)
+        divergence_step1(gridc, gridx, gridy, velc, divv, ifac = scalars.variable['dt'])
     if(predcorr == 'corrector_step1'):
         corrector_step1(gridc, gridx, gridy, velc, pres, scalars.variable['dt']/3)
 
