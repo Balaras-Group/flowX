@@ -121,3 +121,8 @@ def update_bc_val(gridx, gridy, ivar, t):
     gridx.update_bc_val({ivar: bc_val_u})
     gridy.update_bc_val({ivar: bc_val_v})
     return
+
+def get_linf_norm( grid, eror ):
+    
+    return numpy.max( grid.get_values( eror ) )**2
+ 
